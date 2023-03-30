@@ -12,25 +12,25 @@ clean:
 	xcodebuild -scheme safemode-ui -derivedDataPath build -destination 'generic/platform=iOS' clean
 
 release:
-	xcodebuild -scheme ellekit -derivedDataPath build -destination 'generic/platform=iOS' -configuration Release
-	xcodebuild -scheme injector -derivedDataPath build -destination 'generic/platform=iOS' -configuration Release
-	xcodebuild -scheme launchd -derivedDataPath build -destination 'generic/platform=iOS' -configuration Release
-	xcodebuild -scheme loader -derivedDataPath build -destination 'generic/platform=iOS' -configuration Release
-	xcodebuild -scheme safemode-ui -derivedDataPath build -destination 'generic/platform=iOS' -configuration Release
+	xcodebuild -scheme ellekit -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Release
+	xcodebuild -scheme injector -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Release
+	xcodebuild -scheme launchd -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Release
+	xcodebuild -scheme loader -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Release
+	xcodebuild -scheme safemode-ui -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Release
 
 debug:
-	xcodebuild -scheme ellekit -derivedDataPath build -destination 'generic/platform=iOS' -configuration Debug
-	xcodebuild -scheme injector -derivedDataPath build -destination 'generic/platform=iOS' -configuration Debug
-	xcodebuild -scheme launchd -derivedDataPath build -destination 'generic/platform=iOS' -configuration Debug
-	xcodebuild -scheme loader -derivedDataPath build -destination 'generic/platform=iOS' -configuration Debug
-	xcodebuild -scheme safemode-ui -derivedDataPath build -destination 'generic/platform=iOS' -configuration Debug
+	xcodebuild -scheme ellekit -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Debug
+	xcodebuild -scheme injector -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Debug
+	xcodebuild -scheme launchd -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Debug
+	xcodebuild -scheme loader -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Debug
+	xcodebuild -scheme safemode-ui -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED="NO" CODE_SIGNING_REQUIRED="NO" CODE_SIGN_IDENTITY="" -configuration Debug
 
 control:
 	( echo 'Package: ellekit'; \
       echo 'Name: ElleKit (Beta)'; \
       echo 'Version: $(VERSION)'; \
       echo 'Architecture: iphoneos-arm64'; \
-      echo 'Maintainer: Procursus Team <support@procurs.us>'; \
+      echo 'Maintainer: Evelyn'; \
       echo 'Conflicts: com.ex.substitute, org.coolstar.libhooker, science.xnu.substitute, mobilesubstrate'; \
       echo 'Replaces: com.ex.libsubstitute, org.coolstar.libhooker, mobilesubstrate'; \
       echo 'Provides: mobilesubstrate (= 99), org.coolstar.libhooker (= 1.6.9)'; \
@@ -40,7 +40,6 @@ control:
       echo 'Description: ElleKit tweak injection libraries and loader'; \
       echo ' ElleKit tweak injection libraries and loader. Currently in beta,'; \
       echo ' does not currently include a LaunchDaemon.'; \
-      echo 'Depends: libiosexec1 (>= 1.2.2)'; \
 	) > debsource/ellekit/DEBIAN/control
 
 deb: release
@@ -60,7 +59,7 @@ deb: release
 	ldid -S debsource/ellekit/var/jb/usr/lib/ellekit/MobileSafety.dylib
 	chmod 0644 debsource/ellekit/var/jb/usr/lib/ellekit/MobileSafety.dylib
 	cp -RpP build/Build/Products/Release-iphoneos/loader debsource/ellekit/var/jb/usr/libexec/ellekit/loader
-	ldid -S./debsource/loader.xml debsource/ellekit/var/jb/usr/libexec/ellekit/loader
+	ldid -S./loader/taskforpid.xml debsource/ellekit/var/jb/usr/libexec/ellekit/loader
 	chmod 0755 debsource/ellekit/var/jb/usr/libexec/ellekit/loader
 	sudo chown -R 0:0 debsource/ellekit
 	dpkg-deb -Zzstd -b debsource/ellekit ellekit_$(VERSION)_iphoneos-arm64.deb
